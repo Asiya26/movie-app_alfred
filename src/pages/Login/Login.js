@@ -1,17 +1,48 @@
 import React, {useState} from 'react'
 import classes from './Login.module.css'
 import {useNavigate} from 'react-router-dom'
+import { login, singUpProvider, forgotPassword } from '../../firebase'
 
 const Login = () => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const[error, setError] = useState(null)
+
+  const submitHandler = async () => {
+    if(!email || !password) {
+      setError('Invalid Entry');
+      return;
+    }
+    
+    const message = await login(email, password);
+    if (message) {
+      setError(message);
+      navigate('/login')
+      return;
+    }
+    setError(null);
+    navigate('/')
+  }
+    
+  const providerHandler = () => {
+    singUpProvider();
+    navigate('/')
+
+  }
+
+  const forgotPasswordHandler = async(email) => {
+    const message = await forgotPassword(email)
+    if (message) setError(message);
+
+  }
+
 
   return (
     <div className={ `${classes.Login} page`} >
       <div className={ classes.LoginForm}>
         <h1>Login</h1>
+        { error && <p className='text-danger text-center m-3'>{error}</p>}
         <form>
           <div className='mb-3'>
             <label htmlFor='email' className='form-lable text-light'>Email</label>
@@ -23,17 +54,17 @@ const Login = () => {
             <label htmlFor='password' className='form-lable text-light'>Password</label>
             <input type="password" className='form-control' id='password' autoComplete='off' placeholder='Enter your Password'value={password}
             onChange={(e)=> setPassword(e.target.value)}/>
-            <div className='text-center text-warning mt-3' style={{cursor:'pointer'}}>Forget Password?</div>
+            <div className='text-center text-warning mt-3' style={{cursor:'pointer'}} onClick={() => forgotPasswordHandler(email)}>Forget Password?</div>
           </div>
 
           <div className='d-grid'>
-            <button type='button' className='btn btn-primary form-control mt-3'>Login</button>
+            <button type='button' className='btn btn-primary form-control mt-3' onClick={submitHandler}>Login</button>
 
 
           </div>
 
         </form>
-        <button type='button' className='btn btn-primary form-control mt-3'>Continue with Google</button>
+        <button type='button' className='btn btn-primary form-control mt-3' onClick={providerHandler}>Continue with Google</button>
         <p className='text-center text-light mt-3'>Doesn't have an account
         <span className='text-warning' 
         style={{cursor: 'pointer'}}
