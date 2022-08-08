@@ -13,7 +13,7 @@ import {MovieContext} from '../src/components/context/MoviesContext'
 
 function App() {
   const [currentUser, setCurrentUser] = useState();
-  const [movies, setMovies] = useState();
+  const [movies, setMovies] = useState([]);
 
   useEffect (() => { 
     userObserver(setCurrentUser)
