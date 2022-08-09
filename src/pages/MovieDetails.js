@@ -16,10 +16,24 @@ const MovieDetails = () => {
   const videoUrl = `${baseUrl}/movie/${id}/videos?api_key=${process.env.REACT_APP_MOVIE_API_KEY}`;
   const imgUrl = "https://image.tmdb.org/t/p/w1280";
 
-  useEffect(() => { 
-    axios.get(movieDetailsUrl).then(res => { console.log(res.data);  setMovieDetails(res.data) })
-    axios.get(videoUrl).then(res=> setVideoKey(res.data.results[0].key))
-  }, [movieDetails, videoKey , id])
+//   useEffect(() => { 
+//     axios.get(movieDetailsUrl).then(res => { console.log(res.data);  setMovieDetails(res.data) })
+//     axios.get(videoUrl).then(res=> setVideoKey(res.data.results[0].key))
+//   }, [movieDetails, videoKey , id])
+
+useEffect(() => {
+    axios
+      .get(movieDetailsUrl)
+      .then((res) => setMovieDetails(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(videoUrl)
+      .then((res) => setVideoKey(res.data.results[0].key))
+      .catch((err) => console.log(err));
+  }, [movieDetails]);
 
   return (
 		<div className="py-5 page" style={{ backgroundColor: "#555" }}>
